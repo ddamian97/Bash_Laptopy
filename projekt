@@ -1,0 +1,125 @@
+#!/bin/bash
+if [ -d laptopy ]
+then clear
+else mkdir laptopy
+fi
+
+
+
+function menu()
+{
+clear
+echo "___________________________________________"
+echo "-----------------|MENU|--------------------"
+echo "-----------------      --------------------"
+
+select opcja in "1. Lista" "2. Dodaj" "3. Usun" "4. Zakoncz program"
+do
+	case $opcja in
+		"1. Lista") lista;;
+		"2. Dodaj") dodaj;;
+		"3. Usun") usun;;
+		"4. Zakoncz program") wyjscie;;
+		*) echo "Nie wybrales zadnej opcji - nacisnij przycisk aby kontynuowac"
+	esac
+
+read opcja_menu
+menu
+done
+}
+
+function lista()
+{
+	clear
+	if [ -d laptopy ]
+	then
+	cd laptopy
+	else
+	clear
+	fi
+	ls
+	echo "=============================================="
+	select opcja in "1. Podglad" "2. Powrot do menu"
+	do
+		case $opcja in
+			"1. Podglad") podglad;;
+			"2. Powrot do menu") cd..;;
+		esac
+	menu
+	done
+}
+
+function dodaj()
+{
+	cd laptopy
+	clear
+	echo "Podaj nazwe laptoka(zamiast spacji daj podloge_)"
+	read model
+	if [ -e $model ]
+	then
+	echo "Nazwa zajeta! Podaj inna..."
+	read model2
+	cd..
+	dodaj
+	else
+	echo "Model laptoka: $model" >> "$model"
+	echo "Podaj liczbe rdzeni procesora: "
+	read proc
+	echo "Liczba rdzeni procesora: $proc" >> "$model"
+	echo "Podaj pamiec RAM: "
+	read ram
+	echo "Pamiec RAM: $ram" >> "$model"
+	echo "Gotowe! (kliknij aby kontynuowac)"
+	read go
+	menu
+	fi
+}
+
+function usun()
+{
+	clear
+	echo "Podaj nazwe laptoka do usuniecia"
+	read model
+	if [ -d laptopy ]
+	then
+	cd laptopy
+	fi
+	if [ -e $model ]
+	then
+	rm $model
+	echo "Gotowe! Nacisnij, aby kontynuowac"
+	read go
+	menu
+	fi
+}
+
+function podglad()
+{
+	clear
+	echo "Wybierz model do podgladu"
+	read model
+	if [ -d laptopy ]
+	then
+	cd laptopy
+	fi
+	if [ -e $model ]
+	then
+	clear
+	cat $model
+	echo "Nacisnij aby kontynuowac"
+	read go1
+	cd ..
+	menu
+	else
+	echo "brak pliku w bazie"
+	read go2
+	cd..
+	fi
+}
+
+function wyjscie()
+{
+	exit
+}
+clear
+menu
